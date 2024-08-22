@@ -1,14 +1,14 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import { FormProvider, FCheckBox, FTextField } from "./form";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup"; // Import yupResolver
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Alert, IconButton, InputAdornment, Stack } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import * as yup from "yup";
+import { useLogin } from "./LoginContext";
 
 const style = {
   position: "absolute",
@@ -35,12 +35,14 @@ const schema = yup
   })
   .required();
 
-export default function BasicModal({ isOpen, handleClose1, handleLogin }) {
-  const [open, setOpen] = React.useState(false);
-  const [showPassword, setShowPassword] = React.useState(false);
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+export default function BasicModal() {
+  const {
+    isOpen,
+    handleClose1,
+    showPassword,
+    togglePasswordVisibility,
+    handleLogin,
+  } = useLogin(); // Lấy handleLogin từ LoginContext
 
   const defaultValues = {
     email: "locse140456@gmail.com",
@@ -64,8 +66,8 @@ export default function BasicModal({ isOpen, handleClose1, handleLogin }) {
       data.email === defaultValues.email &&
       data.password === defaultValues.password
     ) {
-      handleLogin();
-      handleClose1(); // Close the modal if email and password match default values
+      handleLogin(); // Gọi handleLogin khi thông tin đăng nhập đúng
+      handleClose1(); // Đóng modal sau khi đăng nhập thành công
     } else {
       setError("afterSubmit", {
         type: "manual",
@@ -108,7 +110,7 @@ export default function BasicModal({ isOpen, handleClose1, handleLogin }) {
                       <InputAdornment position="end">
                         <IconButton
                           aria-label="toggle password visibility"
-                          onClick={() => setShowPassword(!showPassword)}
+                          onClick={togglePasswordVisibility}
                           onMouseDown={(e) => e.preventDefault()}
                           edge="end"
                         >

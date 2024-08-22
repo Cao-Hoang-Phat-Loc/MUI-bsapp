@@ -28,9 +28,10 @@ function App() {
         mt={1}
         justifyContent="center"
         margin={"0 auto"}
+        flexWrap="wrap"
       >
         {currentItems.map((ptp) => (
-          <Grid item xs={12} md={4} lg={3} key={ptp.id}>
+          <Grid item key={ptp.id}>
             <BoxSystemProps ptp={ptp} />
           </Grid>
         ))}

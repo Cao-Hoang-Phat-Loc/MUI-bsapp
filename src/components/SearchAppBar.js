@@ -17,6 +17,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import BasicModal from "./Modal";
 import { Button } from "@mui/material";
+import { useLogin } from "./LoginContext"; // Sử dụng useLogin từ LoginContext
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -48,7 +49,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -59,22 +59,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
+  const { isOpen, isLogin, handleOpen, handleLogin, handleLogout } = useLogin(); // Truy cập các giá trị từ context
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const [isLogin, setIsLogin] = React.useState(false);
-  const [isOpen, setIsOpen] = React.useState(false);
-
-  const handleProfileMenuOpen = (event) => {
-    setIsOpen(true);
-  };
-
-  const handleClose1 = (event) => {
-    setIsOpen(false);
-  };
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
@@ -86,9 +78,6 @@ export default function PrimarySearchAppBar() {
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
-  };
-  const handleLogin = () => {
-    setIsLogin(true);
   };
 
   const menuId = "primary-search-account-menu";
@@ -150,7 +139,7 @@ export default function PrimarySearchAppBar() {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
+      <MenuItem onClick={handleOpen}>
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -164,7 +153,7 @@ export default function PrimarySearchAppBar() {
       </MenuItem>
     </Menu>
   );
-  console.log(isLogin);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -199,20 +188,19 @@ export default function PrimarySearchAppBar() {
           {!isLogin ? (
             <Box>
               <Button
-                onClick={handleProfileMenuOpen}
-                variant="outlined"
-                color="error"
+                onClick={handleOpen}
+                variant="contained"
+                color="success"
+                sx={{ color: "white", backgroundColor: "#4caf50" }}
               >
-                login
+                Login
               </Button>
-              <BasicModal
-                isOpen={isOpen}
-                handleClose1={handleClose1}
-                handleLogin={handleLogin}
-              />
+              <BasicModal isOpen={isOpen} handleClose1={handleLogin} />
             </Box>
           ) : (
-            <Box></Box>
+            <Button onClick={handleLogout} variant="contained" color="error">
+              Logout
+            </Button>
           )}
 
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
@@ -222,7 +210,7 @@ export default function PrimarySearchAppBar() {
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              onClick={handleOpen}
               color="inherit"
             >
               <AccountCircle />
